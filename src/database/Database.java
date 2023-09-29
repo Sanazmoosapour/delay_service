@@ -1,5 +1,7 @@
 package database;
 
+import objects.TripState;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,16 +35,24 @@ public class Database {
         ResultSet resultSet;
 
         resultSet = statement.executeQuery("select * from " + tableName);
-
-        while (resultSet.next()) {
-            if(resultSet.getString("order_id").equals(ID)){
-                return true;
+        if(tableName.equals("working_agents")) {
+            while (resultSet.next()) {
+                if (resultSet.getString("agent_id").equals(ID)) {
+                    return true;
+                }
+            }
+        }
+        else {
+            while (resultSet.next()) {
+                if (resultSet.getString("order_id").equals(ID)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public String addNotice(String ID,String vendor) throws SQLException, ClassNotFoundException {
+    public String addNotice(String ID,String vendor) throws SQLException {
         Statement statement;
         statement = connection.createStatement();
         ResultSet resultSet;
@@ -51,7 +61,7 @@ public class Database {
 
         while (resultSet.next()) {
             if(resultSet.getString("order_id").equals(ID) && resultSet.getString("vendor").equals(vendor)){
-                if(! resultSet.getString("trip_state").equals("DELIVERED")){
+                if(! (TripState.valueOf(resultSet.getString("trip_state")) == TripState.DELIVERED )){
                     int delayTime=getDelayTime(ID);
                     if(! exist(ID, "delay_reports")) {
                         addRowToReports(ID, vendor, delayTime);
@@ -70,7 +80,7 @@ public class Database {
         Statement statement;
         statement = connection.createStatement();
 
-        String accessDatabase = "insert into delay_reports (order_id,delay_time)" + " values("+orderID + "," + delayTime + ") ";
+        String accessDatabase = "insert into delay_reports(order_id,vendor,delay_time)" + " values( '" + orderID + "','" + Vendor + "'," + delayTime + ") ";
         int result = statement.executeUpdate(accessDatabase);
         statement.close();
         if (result > 0) {
@@ -106,7 +116,7 @@ public class Database {
         Statement statement;
         statement = connection.createStatement();
 
-        String accessDatabase = "insert into delays_in_progress(order_id)" + " values("+orderID+") ";
+        String accessDatabase = "insert into orders_in_progress(order_id)" + " values("+orderID+") ";
         int result = statement.executeUpdate(accessDatabase);
         statement.close();
         if (result > 0) {
@@ -121,7 +131,7 @@ public class Database {
         resultSet = statement.executeQuery("select * from delay_queue");
 
         while (resultSet.next()) {
-            if(! exist(resultSet.getString("order_id"), "delays_in_progress")){
+            if(! exist(resultSet.getString("order_id"), "orders_in_progress")){
                 addRowToAgents(agentID);
                 addRowToDelays(resultSet.getString("order_id"));
                 return "delay order is in progress";
@@ -163,7 +173,7 @@ public class Database {
                 if(inputLine.contains("eta")){
                     in.close();
                     connection.disconnect();
-                    return Integer.parseInt(inputLine.split(":")[1]);
+                    return Integer.parseInt(inputLine.split(": ")[1]);
                 }
 
             }

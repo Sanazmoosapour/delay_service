@@ -8,7 +8,10 @@ import java.util.*;
 
 
 public class Controller {
-    public String run(String command,String data) throws SQLException, ClassNotFoundException, InterruptedException {
+    public String run(String command,String data)
+            throws SQLException,
+            ClassNotFoundException,
+            InterruptedException {
 
 
         switch (command){
@@ -17,25 +20,29 @@ public class Controller {
             case "asign order":
                 return asignOrder(data);
             case "query":
-                return Query(data) ? "yes" : "no";
-
+                return Query() ? " " : "query error";
         }
         return "error";
     }
 
-    private boolean Query(String data) throws SQLException, ClassNotFoundException {
-        Database db=Database.getInstance();
+    private boolean Query() throws SQLException, ClassNotFoundException {
+        Database db = Database.getInstance();
         Map<String,Integer> map = db.delays();
-        List<Integer> sort = map.values().stream().sorted(Comparator.comparingInt(a -> a)).toList();
-        sort.forEach(System.out::println);
+        List<Map.Entry<String, Integer> > list = new LinkedList<>(map.entrySet());
+
+        Collections.sort(list, Map.Entry.comparingByValue());
+
+        for (Map.Entry<String, Integer> aa : list) {
+            System.out.println(aa.getKey() + " : " + aa.getValue());
+        }
         return true;
 
     }
 
-    private String asignOrder(String data) throws SQLException, ClassNotFoundException, InterruptedException {
-        Database db=Database.getInstance();
+    private String asignOrder(String data) throws SQLException, ClassNotFoundException {
+        Database db = Database.getInstance();
         synchronized (db){
-            if(!db.exist(data,"agentsInProgress")){
+            if(! db.exist(data, "working_agents")){
                 return db.asignOrder(data);
             }
             else{
@@ -45,8 +52,7 @@ public class Controller {
     }
 
     private String delayNotice(String data) throws SQLException, ClassNotFoundException {
-        System.out.println("in delay notice");
-        Database db=Database.getInstance();
+        Database db = Database.getInstance();
         synchronized (db) {
             Order order = Convertor.dataToOrder(data);
             return db.addNotice(order.getOrderID(), order.getVendor());

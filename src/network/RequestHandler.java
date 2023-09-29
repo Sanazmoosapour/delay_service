@@ -15,18 +15,18 @@ public class RequestHandler extends Thread {
     public void run(){
         try {
 
-            DataInputStream dis=new DataInputStream(socket.getInputStream());
-            DataOutputStream dos=new DataOutputStream(socket.getOutputStream());
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
 
-            String request=dis.readUTF();
+            String request = dis.readUTF();
 
-            Scanner sc=new Scanner(request);
+            Scanner sc = new Scanner(request);
 
-            String command=sc.nextLine();
-            String data=sc.nextLine();
+            String command = sc.nextLine();
+            String data = sc.nextLine();
 
-            String response=new Controller().run(command,data);
+            String response = new Controller().run(command,data);
 
             dos.writeUTF(response);
             dos.flush();
@@ -36,11 +36,7 @@ public class RequestHandler extends Thread {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (SQLException | ClassNotFoundException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
