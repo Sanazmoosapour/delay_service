@@ -6,7 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class test {
+public class Test {
     static Socket s;
     static DataOutputStream dos;
     static DataInputStream dis;
@@ -25,7 +25,7 @@ public class test {
         dis.close();
         s.close();
     }
-    @Test
+    @org.junit.Test
     public void testDelayNotice() {
         try {
             dos.writeUTF("delay notice\n100,sanaz,50,ASSIGNED");
@@ -50,7 +50,7 @@ public class test {
 
     }
 
-    @Test
+    @org.junit.Test
     public void testAsignOrder() {
         try {
             dos.writeUTF("delay notice\n100,sanaz,50,ASSIGNED");

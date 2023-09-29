@@ -1,13 +1,13 @@
 package controller;
+import database.Database;
 import utils.*;
 import objects.*;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
-public class controller {
+public class Controller {
     public String run(String command,String data) throws SQLException, ClassNotFoundException, InterruptedException {
 
 
@@ -24,7 +24,7 @@ public class controller {
     }
 
     private boolean Query(String data) throws SQLException, ClassNotFoundException {
-        database db=database.getInstance();
+        Database db=Database.getInstance();
         Map<String,Integer> map = db.delays();
         List<Integer> sort = map.values().stream().sorted(Comparator.comparingInt(a -> a)).toList();
         sort.forEach(System.out::println);
@@ -33,7 +33,7 @@ public class controller {
     }
 
     private String asignOrder(String data) throws SQLException, ClassNotFoundException, InterruptedException {
-        database db=database.getInstance();
+        Database db=Database.getInstance();
         synchronized (db){
             if(!db.exist(data,"agentsInProgress")){
                 return db.asignOrder(data);
@@ -46,9 +46,9 @@ public class controller {
 
     private String delayNotice(String data) throws SQLException, ClassNotFoundException {
         System.out.println("in delay notice");
-        database db=database.getInstance();
+        Database db=Database.getInstance();
         synchronized (db) {
-            order order = convertor.dataToOrder(data);
+            Order order = Convertor.dataToOrder(data);
             return db.addNotice(order.getOrderID(), order.getVendor());
         }
     }

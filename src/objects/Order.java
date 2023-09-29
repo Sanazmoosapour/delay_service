@@ -1,12 +1,12 @@
 package objects;
 
-public class order {
+public class Order {
     private String orderID;
     private String vendor;
     private int deliveryTime;
     private TripState state;
 
-    public order() {
+    public Order() {
 
     }
 

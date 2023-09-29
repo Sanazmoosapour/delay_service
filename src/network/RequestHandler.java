@@ -4,11 +4,11 @@ import java.io.*;
 import java.net.*;
 import java.sql.SQLException;
 import java.util.*;
-import controller.controller;
+import controller.Controller;
 
-public class requestHandler extends Thread {
+public class RequestHandler extends Thread {
     public static Socket socket;
-    public requestHandler(Socket socket){
+    public RequestHandler(Socket socket){
         this.socket = socket;
     }
     @Override
@@ -26,7 +26,7 @@ public class requestHandler extends Thread {
             String command=sc.nextLine();
             String data=sc.nextLine();
 
-            String response=new controller().run(command,data);
+            String response=new Controller().run(command,data);
 
             dos.writeUTF(response);
             dos.flush();

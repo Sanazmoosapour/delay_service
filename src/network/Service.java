@@ -3,7 +3,7 @@ package network;
 import java.io.IOException;
 import java.net.*;
 
-public class service {
+public class Service {
     public void start(){
         int serverPort = 8080;
 
@@ -16,9 +16,10 @@ public class service {
 
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("accept");
-                new requestHandler(clientSocket).run();
+                new RequestHandler(clientSocket).run();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
 

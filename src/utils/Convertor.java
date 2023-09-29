@@ -1,10 +1,10 @@
 package utils;
 import objects.*;
 
-public class convertor {
-    public static order dataToOrder(String data){
+public class Convertor {
+    public static Order dataToOrder(String data){
         String[] splited=data.split(",");
-        order order=new order();
+        Order order=new Order();
         order.setOrderID(splited[0]);
         order.setVendor(splited[1]);
         order.setDeliveryTime(Integer.parseInt(splited[2]));
